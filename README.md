@@ -1,6 +1,6 @@
 # VitePress Sidebar Tags Plugin
 
-一个强大的 VitePress 插件，用于在侧边栏中自动添加基于 frontmatter 的多样化标签。
+一个强大的 VitePress 插件，可以根据 markdown 文件的 frontmatter 自动在侧边栏中添加各种标签。
 
 ## 🎯 快速开始
 
@@ -36,22 +36,20 @@ status: stable
 
 ## ✨ 特性
 
-- 🏷️ **多标签支持**：支持同时配置多个 frontmatter 字段，每个文档可以显示多个标签
-- 📍 **灵活位置**：标签可以放在文本前或后，支持优先级排序
-- 🎨 **丰富样式**：提供多种预设主题和完全自定义的样式选项，支持 20+ 颜色主题
-- 🌈 **多种变体**：支持 solid、outline、soft、subtle 四种样式变体
-- 🌍 **完整国际化**：完整支持多语言配置和暗色模式
-- ⚡ **高性能设计**：构建时生成，运行时零开销
-- 🔧 **灵活集成**：支持现有配置、动态生成、文件存储等多种使用方式
+- 🏷️ **多标签支持**：一个文档可同时显示多个标签
+- 📍 **灵活位置**：标签可前置或后置，支持优先级排序
+- 🎨 **丰富样式**：20+ 预设颜色主题 + 4种变体（solid, outline, soft, subtle）
+- ⚙️ **强大配置**：条件显示、值转换、自定义样式
+- 🔧 **简洁 API**：支持标准的 VitePress 配置结构
+- ✅ **完全可选**：不配置不会有任何副作用
+- 🌍 **多语言支持**：完美适配 VitePress 多语言配置
 
 ## 📦 安装
 
 ```bash
 npm install vitepress-plugin-sidebar-tags
-# 或
+# 或者
 pnpm add vitepress-plugin-sidebar-tags
-# 或
-yarn add vitepress-plugin-sidebar-tags
 ```
 
 ## 🚀 使用方法

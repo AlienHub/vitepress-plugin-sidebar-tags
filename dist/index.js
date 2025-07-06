@@ -395,6 +395,47 @@ function createUpdateTag(overrides) {
 function createSidebarTags(options) {
   return new SidebarTagsCore(options);
 }
+function processSidebar(sidebar, tags, options) {
+  if (Array.isArray(sidebar)) {
+    const core = new SidebarTagsCore({
+      tags,
+      sidebar,
+      // 类型断言
+      docsPath: (options == null ? void 0 : options.docsPath) || "docs",
+      injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
+      debug: (options == null ? void 0 : options.debug) ?? false
+    });
+    return core.generateSidebarSync();
+  } else if (typeof sidebar === "object" && sidebar !== null) {
+    const result = {};
+    for (const [path2, config] of Object.entries(sidebar)) {
+      if (Array.isArray(config)) {
+        const pathCore = new SidebarTagsCore({
+          tags,
+          sidebar: config,
+          // 类型断言
+          docsPath: (options == null ? void 0 : options.docsPath) || "docs",
+          injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
+          debug: (options == null ? void 0 : options.debug) ?? false
+        });
+        result[path2] = pathCore.generateSidebarSync();
+      } else {
+        result[path2] = config;
+      }
+    }
+    return result;
+  }
+  return sidebar;
+}
+function withSidebarTags(themeConfig, tags, options) {
+  if (!themeConfig.sidebar) {
+    return themeConfig;
+  }
+  return {
+    ...themeConfig,
+    sidebar: processSidebar(themeConfig.sidebar, tags, options)
+  };
+}
 function withVitePressConfig(vitepressConfig, tags, locale = "zh") {
   const core = new SidebarTagsCore({
     tags,
@@ -421,6 +462,8 @@ export {
   createUpdateTag,
   createVersionTag,
   cssPath,
+  processSidebar,
+  withSidebarTags,
   withVitePressConfig
 };
 //# sourceMappingURL=index.js.map
