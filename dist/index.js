@@ -395,20 +395,32 @@ function createUpdateTag(overrides) {
 function createSidebarTags(options) {
   return new SidebarTagsCore(options);
 }
-function withVitePressConfig(vitepressConfig, tags, locale) {
+function withVitePressConfig(vitepressConfig, tags, locale = "zh") {
   const core = new SidebarTagsCore({
     tags,
     vitepressConfig
   });
   return core.generateSidebarSync(locale);
 }
+const cssPath = "vitepress-plugin-sidebar-tags/style.css";
+function createThemeEnhancer() {
+  return {
+    enhanceApp({ app }) {
+      if (typeof window !== "undefined") {
+        console.log("VitePress Sidebar Tags: Please import CSS in your theme file");
+      }
+    }
+  };
+}
 export {
   SidebarTagsCore,
   createHttpMethodsTag,
   createSidebarTags,
   createStatusTag,
+  createThemeEnhancer,
   createUpdateTag,
   createVersionTag,
+  cssPath,
   withVitePressConfig
 };
 //# sourceMappingURL=index.js.map

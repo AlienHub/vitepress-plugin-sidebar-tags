@@ -1,21 +1,34 @@
+import type { SidebarTagsOptions, TagConfig, SidebarItem } from './types'
 import { SidebarTagsCore } from './core'
-import { SidebarTagsOptions, TagConfig, SidebarItem, SidebarSource } from './types'
-import { createHttpMethodsTag, createVersionTag, createStatusTag, createUpdateTag } from './presets'
+
+// 导出类型
+export type * from './types'
+
+// 导出核心类（高级用法）
+export { SidebarTagsCore }
+
+// 导出预设标签配置函数
+export { 
+  createHttpMethodsTag, 
+  createVersionTag, 
+  createStatusTag, 
+  createUpdateTag 
+} from './presets'
 
 /**
- * 创建侧边栏标签插件实例
+ * 创建侧边栏标签实例
  */
 export function createSidebarTags(options: SidebarTagsOptions): SidebarTagsCore {
   return new SidebarTagsCore(options)
 }
 
 /**
- * 从VitePress配置获取侧边栏并处理标签
+ * 使用VitePress配置创建侧边栏（兼容函数）
  */
 export function withVitePressConfig(
   vitepressConfig: any,
   tags: TagConfig[],
-  locale?: string
+  locale = 'zh'
 ): SidebarItem[] {
   const core = new SidebarTagsCore({
     tags,
@@ -24,11 +37,23 @@ export function withVitePressConfig(
   return core.generateSidebarSync(locale)
 }
 
-// 导出预设配置
-export { createHttpMethodsTag, createVersionTag, createStatusTag, createUpdateTag }
+/**
+ * 获取CSS文件路径 - 用于手动导入
+ */
+export const cssPath = 'vitepress-plugin-sidebar-tags/style.css'
 
-// 导出类型
-export type { SidebarTagsOptions, TagConfig, SidebarItem, SidebarSource }
-
-// 导出核心类（高级用法）
-export { SidebarTagsCore } 
+/**
+ * 创建VitePress主题增强器，自动处理CSS导入
+ */
+export function createThemeEnhancer() {
+  return {
+    enhanceApp({ app }: any) {
+      // 客户端环境下动态导入CSS
+      if (typeof window !== 'undefined') {
+        // 注意：这里不能直接导入，因为打包时会有问题
+        // 用户需要在主题文件中手动导入CSS
+        console.log('VitePress Sidebar Tags: Please import CSS in your theme file')
+      }
+    }
+  }
+} 

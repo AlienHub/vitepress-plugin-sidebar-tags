@@ -1,34 +1,20 @@
 # 🎨 CSS样式集成指南
 
-如果你发现标签样式没有正确显示，请按照以下方法之一导入CSS样式：
+如果你发现标签样式没有正确显示，请按照以下方法导入CSS样式：
 
-## 方法1：在VitePress配置中导入（推荐）
+## ⚠️ 重要提醒
 
-在你的 `.vitepress/config.ts` 文件中：
+**不要在 `.vitepress/config.ts` 中直接导入CSS！** 这会导致 `Unknown file extension ".css"` 错误，因为配置文件在Node.js环境中执行。
 
-```typescript
-import { defineConfig } from 'vitepress'
-import { createSidebarTags } from 'vitepress-plugin-sidebar-tags'
-// 👈 在这里导入CSS样式
-import 'vitepress-plugin-sidebar-tags/style.css'
+## ✅ 正确的方法
 
-export default defineConfig({
-  // 你的VitePress配置
-  themeConfig: {
-    sidebar: {
-      '/': sidebarTags.generateSidebarSync()
-    }
-  }
-})
-```
+### 方法1：在主题文件中导入（推荐）
 
-## 方法2：在主题配置中导入
-
-如果你有自定义主题，在 `.vitepress/theme/index.ts` 中：
+创建或修改 `.vitepress/theme/index.ts`：
 
 ```typescript
 import DefaultTheme from 'vitepress/theme'
-// 👈 在主题中导入CSS样式
+// ✅ 在主题文件中导入CSS是正确的
 import 'vitepress-plugin-sidebar-tags/style.css'
 
 export default {
@@ -39,58 +25,63 @@ export default {
 }
 ```
 
-## 方法3：使用客户端插件（自动导入）
+### 方法2：使用head配置
 
-在 `.vitepress/theme/index.ts` 中：
-
-```typescript
-import DefaultTheme from 'vitepress/theme'
-// 👈 导入客户端插件，会自动导入CSS
-import SidebarTagsClient from 'vitepress-plugin-sidebar-tags/client'
-
-export default {
-  extends: DefaultTheme,
-  enhanceApp({ app }) {
-    // 客户端插件会自动注入CSS样式
-  }
-}
-```
-
-## 方法4：在HTML中直接引用
-
-如果以上方法都不工作，可以在 `.vitepress/config.ts` 中：
+在 `.vitepress/config.ts` 中：
 
 ```typescript
+import { defineConfig } from 'vitepress'
+import { createSidebarTags } from 'vitepress-plugin-sidebar-tags'
+// ❌ 不要在这里导入CSS: import 'vitepress-plugin-sidebar-tags/style.css'
+
 export default defineConfig({
+  // ✅ 使用head配置来引入CSS
   head: [
     ['link', { 
       rel: 'stylesheet', 
       href: '/node_modules/vitepress-plugin-sidebar-tags/dist/style.css' 
     }]
-  ]
+  ],
+  themeConfig: {
+    sidebar: {
+      // 你的侧边栏配置
+    }
+  }
 })
 ```
 
-## 🎯 推荐方案
+### 方法3：使用主题增强器（v0.1.2+）
 
-**最推荐使用方法1**，在配置文件中直接导入，这样可以确保CSS在构建时被正确包含。
+```typescript
+// .vitepress/theme/index.ts
+import DefaultTheme from 'vitepress/theme'
+import { createThemeEnhancer } from 'vitepress-plugin-sidebar-tags'
+import 'vitepress-plugin-sidebar-tags/style.css'
 
-## 🐛 故障排除
+const themeEnhancer = createThemeEnhancer()
 
-如果样式仍然没有生效：
+export default {
+  extends: DefaultTheme,
+  enhanceApp(ctx) {
+    themeEnhancer.enhanceApp(ctx)
+  }
+}
+```
 
-1. **检查控制台错误**：打开浏览器开发者工具，查看是否有CSS文件加载失败的错误
-2. **检查网络面板**：确认CSS文件是否被正确加载
-3. **清除缓存**：尝试清除浏览器缓存和VitePress构建缓存
-4. **检查路径**：确认CSS文件路径是否正确
+## 🐛 错误解决
+
+如果你遇到 `Unknown file extension ".css"` 错误：
+
+1. **检查导入位置**：确保CSS导入在 `.vitepress/theme/index.ts` 中，而不是在 `.vitepress/config.ts` 中
+2. **创建主题文件**：如果没有主题文件，创建 `.vitepress/theme/index.ts`
+3. **使用head配置**：作为备选方案，使用VitePress的head配置
 
 ## 📝 完整示例
 
+### 配置文件 (`.vitepress/config.ts`)
 ```typescript
-// .vitepress/config.ts
 import { defineConfig } from 'vitepress'
 import { createSidebarTags } from 'vitepress-plugin-sidebar-tags'
-import 'vitepress-plugin-sidebar-tags/style.css'
 
 const sidebarTags = createSidebarTags({
   tags: [
@@ -120,4 +111,20 @@ export default defineConfig({
 })
 ```
 
-这样标签就会正确显示样式了！🎉 
+### 主题文件 (`.vitepress/theme/index.ts`)
+```typescript
+import DefaultTheme from 'vitepress/theme'
+import 'vitepress-plugin-sidebar-tags/style.css'
+
+export default {
+  extends: DefaultTheme
+}
+```
+
+这样标签就会正确显示样式了！🎉
+
+## 🎯 总结
+
+- ✅ 在主题文件中导入CSS
+- ✅ 使用head配置引入CSS
+- ❌ 不要在config.ts中直接导入CSS 
