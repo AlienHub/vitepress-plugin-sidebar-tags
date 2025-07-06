@@ -34,6 +34,8 @@ export function withSidebarTags(
     injectInProduction?: boolean
     /** 是否开启调试模式 */
     debug?: boolean
+    /** 语言代码 */
+    locale?: string
   }
 ): DefaultTheme.SidebarItem[] {
   const core = new SidebarTagsCore({
@@ -44,7 +46,7 @@ export function withSidebarTags(
     debug: options?.debug ?? false
   })
   
-  return core.generateSidebarSync() as DefaultTheme.SidebarItem[]
+  return core.generateSidebarSync(options?.locale || 'zh') as DefaultTheme.SidebarItem[]
 }
 
 /**
@@ -71,7 +73,12 @@ export function withMultiSidebarTags(
   
   for (const [path, config] of Object.entries(sidebarConfig)) {
     if (Array.isArray(config)) {
-      result[path] = withSidebarTags(config, tags, options)
+      // 从路径中提取语言代码
+      const locale = extractLocaleFromPath(path)
+      result[path] = withSidebarTags(config, tags, {
+        ...options,
+        locale
+      })
     } else {
       // 保持原有配置（函数类型等）
       result[path] = config
@@ -79,6 +86,14 @@ export function withMultiSidebarTags(
   }
   
   return result
+}
+
+/**
+ * 从路径中提取语言代码
+ */
+function extractLocaleFromPath(path: string): string {
+  const match = path.match(/^\/([a-z]{2})\//)
+  return match ? match[1] : 'zh'
 }
 
 /**
@@ -97,6 +112,8 @@ export function generateSidebar(
     injectInProduction?: boolean
     /** 是否开启调试模式 */
     debug?: boolean
+    /** 语言代码 */
+    locale?: string
   }
 ): DefaultTheme.SidebarItem[] {
   const core = new SidebarTagsCore({
@@ -106,7 +123,7 @@ export function generateSidebar(
     debug: options?.debug ?? false
   })
   
-  return core.generateSidebarSync() as DefaultTheme.SidebarItem[]
+  return core.generateSidebarSync(options?.locale || 'zh') as DefaultTheme.SidebarItem[]
 }
 
 /**

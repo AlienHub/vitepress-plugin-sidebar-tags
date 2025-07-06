@@ -8,8 +8,7 @@ export default defineConfig({
       insertTypesEntry: true,
       exclude: ['**/*.test.ts', '**/test/**'],
       outDir: 'dist',
-      include: ['src/**/*.ts'],
-      rollupTypes: true
+      include: ['src/**/*.ts']
     })
   ],
   build: {

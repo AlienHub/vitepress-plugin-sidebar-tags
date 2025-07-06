@@ -400,18 +400,26 @@ function withSidebarTags(sidebar, tags, options) {
     injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
     debug: (options == null ? void 0 : options.debug) ?? false
   });
-  return core.generateSidebarSync();
+  return core.generateSidebarSync((options == null ? void 0 : options.locale) || "zh");
 }
 function withMultiSidebarTags(sidebarConfig, tags, options) {
   const result = {};
   for (const [path2, config] of Object.entries(sidebarConfig)) {
     if (Array.isArray(config)) {
-      result[path2] = withSidebarTags(config, tags, options);
+      const locale = extractLocaleFromPath(path2);
+      result[path2] = withSidebarTags(config, tags, {
+        ...options,
+        locale
+      });
     } else {
       result[path2] = config;
     }
   }
   return result;
+}
+function extractLocaleFromPath(path2) {
+  const match = path2.match(/^\/([a-z]{2})\//);
+  return match ? match[1] : "zh";
 }
 function generateSidebar(tags, options) {
   const core = new SidebarTagsCore({
@@ -420,7 +428,7 @@ function generateSidebar(tags, options) {
     injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
     debug: (options == null ? void 0 : options.debug) ?? false
   });
-  return core.generateSidebarSync();
+  return core.generateSidebarSync((options == null ? void 0 : options.locale) || "zh");
 }
 function generateSidebarFromConfig(vitepressConfig, tags, locale = "zh") {
   const core = new SidebarTagsCore({
