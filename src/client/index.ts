@@ -27,4 +27,11 @@ export function createThemeExtension(): Partial<Theme> {
 }
 
 // 导出样式文件路径，供用户手动导入
-export const styleFile = './style.css' 
+export const styleFile = './style.css'
+
+// 客户端插件，自动注入CSS样式
+export default {
+  enhance({ app, router, siteData }: any) {
+    // 可以在这里添加客户端增强逻辑
+  }
+} 

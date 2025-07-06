@@ -1,6 +1,6 @@
 {
   "name": "vitepress-plugin-sidebar-tags",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A powerful VitePress plugin to automatically add diverse tags to sidebar based on frontmatter",
   "type": "module",
   "main": "dist/index.js",
@@ -17,7 +17,8 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "CSS-INTEGRATION.md"
   ],
   "scripts": {
     "build": "vite build",

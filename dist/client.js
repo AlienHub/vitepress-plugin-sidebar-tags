@@ -11,8 +11,13 @@ function createThemeExtension() {
   };
 }
 const styleFile = "./style.css";
+const index = {
+  enhance({ app, router, siteData }) {
+  }
+};
 export {
   createThemeExtension,
+  index as default,
   setupClient,
   styleFile
 };
