@@ -1,0 +1,19 @@
+[
+  {
+    "text": "API Documentation",
+    "items": [
+      {
+        "text": "User Management",
+        "link": "/en/api/users"
+      },
+      {
+        "text": "Create User",
+        "link": "/en/api/create-user"
+      },
+      {
+        "text": "Update User",
+        "link": "/en/api/update-user"
+      }
+    ]
+  }
+] 
