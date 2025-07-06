@@ -106,6 +106,11 @@ export class SidebarTagsCore {
       classes.push(config.variant)
     }
     
+    // 添加圆角类
+    if (config.rounded) {
+      classes.push(`rounded-${config.rounded}`)
+    }
+    
     // 添加颜色类或自定义类
     if (config.customStyle) {
       classes.push('custom')
@@ -207,14 +212,54 @@ export class SidebarTagsCore {
           fullPath = basePath + newItem.link
         }
         
-        // 确保路径以 /locale/ 开头
-        if (!fullPath.startsWith(`/${locale}/`)) {
-          fullPath = `/${locale}${fullPath.startsWith('/') ? '' : '/'}${fullPath}`
-        }
-        
-        // 构建实际的文件系统路径
+        // 智能路径处理：根据配置和文件存在性决定使用哪种路径
         const docsPath = path.join(process.cwd(), this.options.docsPath || 'docs')
-        const markdownPath = path.join(docsPath, `${fullPath}.md`)
+        let markdownPath: string
+        let finalPath: string
+        
+        // 如果用户明确指定了多语言模式
+        if (this.options.multiLanguage === true) {
+          // 强制使用多语言路径
+          let localeFullPath = fullPath
+          if (!localeFullPath.startsWith(`/${locale}/`)) {
+            localeFullPath = `/${locale}${localeFullPath.startsWith('/') ? '' : '/'}${localeFullPath}`
+          }
+          const localeMarkdownPath = path.join(docsPath, `${localeFullPath.substring(1)}.md`)
+          markdownPath = localeMarkdownPath
+          finalPath = localeFullPath
+        } else if (this.options.multiLanguage === false) {
+          // 强制使用单语言路径
+          const originalPath = fullPath.startsWith('/') ? fullPath.substring(1) : fullPath
+          const originalMarkdownPath = path.join(docsPath, `${originalPath}.md`)
+          markdownPath = originalMarkdownPath
+          finalPath = fullPath
+        } else {
+          // 自动检测模式
+          const originalPath = fullPath.startsWith('/') ? fullPath.substring(1) : fullPath
+          const originalMarkdownPath = path.join(docsPath, `${originalPath}.md`)
+          
+          if (fs.existsSync(originalMarkdownPath)) {
+            // 单语言文档：直接使用原始路径
+            markdownPath = originalMarkdownPath
+            finalPath = fullPath
+          } else if (locale === 'auto') {
+            // 特殊情况：没有配置语言的自动检测模式，只尝试原始路径
+            markdownPath = originalMarkdownPath
+            finalPath = fullPath
+            if (this.options.debug) {
+              console.warn(`File not found: ${originalMarkdownPath}. Auto-detection mode without locale configured will not try language-specific paths.`)
+            }
+          } else {
+            // 多语言文档：添加语言前缀
+            let localeFullPath = fullPath
+            if (!localeFullPath.startsWith(`/${locale}/`)) {
+              localeFullPath = `/${locale}${localeFullPath.startsWith('/') ? '' : '/'}${localeFullPath}`
+            }
+            const localeMarkdownPath = path.join(docsPath, `${localeFullPath.substring(1)}.md`)
+            markdownPath = localeMarkdownPath
+            finalPath = localeFullPath
+          }
+        }
         
         // 获取 frontmatter
         const frontmatter = this.getFrontmatter(markdownPath)
@@ -227,7 +272,7 @@ export class SidebarTagsCore {
           newItem.text = beforeTags + newItem.text + afterTags
           
           if (this.options.debug && (beforeTags || afterTags)) {
-            console.log(`Injected tags for ${fullPath}: before="${beforeTags}", after="${afterTags}"`)
+            console.log(`Injected tags for ${finalPath}: before="${beforeTags}", after="${afterTags}"`)
           }
         }
       }

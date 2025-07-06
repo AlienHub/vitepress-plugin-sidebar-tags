@@ -1,0 +1,100 @@
+/**
+ * 自定义样式 - VitePress Sidebar Tags Plugin 展示网站
+ */
+
+/* 品牌颜色定制 */
+:root {
+  --vp-c-brand-1: #3b82f6;
+  --vp-c-brand-2: #60a5fa;
+  --vp-c-brand-3: #93c5fd;
+  --vp-c-brand-soft: rgba(59, 130, 246, 0.14);
+}
+
+/* 暗色模式品牌颜色 */
+.dark {
+  --vp-c-brand-1: #60a5fa;
+  --vp-c-brand-2: #3b82f6;
+  --vp-c-brand-3: #1d4ed8;
+  --vp-c-brand-soft: rgba(96, 165, 250, 0.16);
+}
+
+/* 增强侧边栏标签的展示效果 */
+.VPSidebar .sidebar-tag,
+.vp-sidebar .sidebar-tag {
+  transition: all 0.2s ease;
+}
+
+.VPSidebar .sidebar-tag:hover,
+.vp-sidebar .sidebar-tag:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 首页英雄区域样式增强 */
+.VPHero .title {
+  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 代码块样式增强 */
+.vp-code-group .tabs {
+  background: var(--vp-c-bg-soft);
+}
+
+.vp-code-group .tabs input:checked + label {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+/* 自定义容器样式 */
+.custom-block.tip {
+  border-color: var(--vp-c-brand-1);
+}
+
+.custom-block.tip .custom-block-title {
+  color: var(--vp-c-brand-1);
+}
+
+/* 响应式设计增强 */
+@media (max-width: 768px) {
+  .VPSidebar .sidebar-tag,
+  .vp-sidebar .sidebar-tag {
+    font-size: 9px !important;
+    padding: 1px 3px !important;
+    margin: 0 2px !important;
+  }
+}
+
+/* 加载动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vp-doc {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* API 文档页面特殊样式 */
+.api-page .sidebar-tag {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+} 

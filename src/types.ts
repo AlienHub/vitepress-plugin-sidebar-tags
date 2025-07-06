@@ -16,6 +16,11 @@ export type TagSize = 'xs' | 'sm' | 'md' | 'lg'
 export type TagVariant = 'solid' | 'outline' | 'soft' | 'subtle'
 
 /**
+ * 圆角大小类型，参考 NuxtUI 设计
+ */
+export type RoundedSize = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full'
+
+/**
  * 预设颜色主题
  */
 export type TagColor = 
@@ -91,6 +96,12 @@ export interface TagConfig {
    * @default 'primary'
    */
   color?: TagColor
+  
+  /**
+   * 圆角大小，参考 NuxtUI 设计
+   * @default 'sm'
+   */
+  rounded?: RoundedSize
   
   /**
    * 自定义样式（会覆盖预设主题）
@@ -191,6 +202,9 @@ export interface SidebarTagsOptions {
   
   /** VitePress 配置对象（用于自动获取sidebar配置） */
   vitepressConfig?: any
+  
+  /** 是否为多语言模式（如果未指定，会自动检测） */
+  multiLanguage?: boolean
 }
 
 export interface SidebarItem extends DefaultTheme.SidebarItem {

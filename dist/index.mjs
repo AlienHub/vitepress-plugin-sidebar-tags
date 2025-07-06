@@ -68,6 +68,9 @@ class SidebarTagsCore {
     if (config.variant) {
       classes.push(config.variant);
     }
+    if (config.rounded) {
+      classes.push(`rounded-${config.rounded}`);
+    }
     if (config.customStyle) {
       classes.push("custom");
     } else if (config.color) {
@@ -142,17 +145,50 @@ class SidebarTagsCore {
         } else if (basePath) {
           fullPath = basePath + newItem.link;
         }
-        if (!fullPath.startsWith(`/${locale}/`)) {
-          fullPath = `/${locale}${fullPath.startsWith("/") ? "" : "/"}${fullPath}`;
-        }
         const docsPath = path.join(process.cwd(), this.options.docsPath || "docs");
-        const markdownPath = path.join(docsPath, `${fullPath}.md`);
+        let markdownPath;
+        let finalPath;
+        if (this.options.multiLanguage === true) {
+          let localeFullPath = fullPath;
+          if (!localeFullPath.startsWith(`/${locale}/`)) {
+            localeFullPath = `/${locale}${localeFullPath.startsWith("/") ? "" : "/"}${localeFullPath}`;
+          }
+          const localeMarkdownPath = path.join(docsPath, `${localeFullPath.substring(1)}.md`);
+          markdownPath = localeMarkdownPath;
+          finalPath = localeFullPath;
+        } else if (this.options.multiLanguage === false) {
+          const originalPath = fullPath.startsWith("/") ? fullPath.substring(1) : fullPath;
+          const originalMarkdownPath = path.join(docsPath, `${originalPath}.md`);
+          markdownPath = originalMarkdownPath;
+          finalPath = fullPath;
+        } else {
+          const originalPath = fullPath.startsWith("/") ? fullPath.substring(1) : fullPath;
+          const originalMarkdownPath = path.join(docsPath, `${originalPath}.md`);
+          if (fs.existsSync(originalMarkdownPath)) {
+            markdownPath = originalMarkdownPath;
+            finalPath = fullPath;
+          } else if (locale === "auto") {
+            markdownPath = originalMarkdownPath;
+            finalPath = fullPath;
+            if (this.options.debug) {
+              console.warn(`File not found: ${originalMarkdownPath}. Auto-detection mode without locale configured will not try language-specific paths.`);
+            }
+          } else {
+            let localeFullPath = fullPath;
+            if (!localeFullPath.startsWith(`/${locale}/`)) {
+              localeFullPath = `/${locale}${localeFullPath.startsWith("/") ? "" : "/"}${localeFullPath}`;
+            }
+            const localeMarkdownPath = path.join(docsPath, `${localeFullPath.substring(1)}.md`);
+            markdownPath = localeMarkdownPath;
+            finalPath = localeFullPath;
+          }
+        }
         const frontmatter = this.getFrontmatter(markdownPath);
         const { beforeTags, afterTags } = this.generateTags(frontmatter);
         if (newItem.text) {
           newItem.text = beforeTags + newItem.text + afterTags;
           if (this.options.debug && (beforeTags || afterTags)) {
-            console.log(`Injected tags for ${fullPath}: before="${beforeTags}", after="${afterTags}"`);
+            console.log(`Injected tags for ${finalPath}: before="${beforeTags}", after="${afterTags}"`);
           }
         }
       }
@@ -317,6 +353,7 @@ const tagPresets = {
     size: "xs",
     variant: "solid",
     color: "primary",
+    rounded: "sm",
     transform: (value) => value.toUpperCase(),
     valueStyles: {
       "GET": { color: "success" },
@@ -337,6 +374,7 @@ const tagPresets = {
     size: "xs",
     variant: "outline",
     color: "blue",
+    rounded: "md",
     prefix: "v",
     transform: (value) => value.replace(/^v?/, ""),
     show: (value) => Boolean(value)
@@ -350,6 +388,7 @@ const tagPresets = {
     size: "xs",
     variant: "soft",
     color: "gray",
+    rounded: "lg",
     valueStyles: {
       "new": { color: "green" },
       "updated": { color: "blue" },
@@ -371,6 +410,7 @@ const tagPresets = {
     size: "xs",
     variant: "solid",
     color: "success",
+    rounded: "full",
     valueStyles: {
       "new": { color: "success" },
       "updated": { color: "info" },
@@ -398,9 +438,11 @@ function withSidebarTags(sidebar, tags, options) {
     sidebar,
     docsPath: (options == null ? void 0 : options.docsPath) || "docs",
     injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
-    debug: (options == null ? void 0 : options.debug) ?? false
+    debug: (options == null ? void 0 : options.debug) ?? false,
+    multiLanguage: options == null ? void 0 : options.multiLanguage
   });
-  return core.generateSidebarSync((options == null ? void 0 : options.locale) || "zh");
+  const locale = (options == null ? void 0 : options.locale) || ((options == null ? void 0 : options.multiLanguage) === void 0 ? "auto" : "zh");
+  return core.generateSidebarSync(locale);
 }
 function withMultiSidebarTags(sidebarConfig, tags, options) {
   const result = {};
@@ -409,7 +451,9 @@ function withMultiSidebarTags(sidebarConfig, tags, options) {
       const locale = extractLocaleFromPath(path2);
       result[path2] = withSidebarTags(config, tags, {
         ...options,
-        locale
+        locale,
+        multiLanguage: (options == null ? void 0 : options.multiLanguage) ?? true
+        // 多路径侧边栏默认为多语言模式
       });
     } else {
       result[path2] = config;
@@ -426,9 +470,11 @@ function generateSidebar(tags, options) {
     tags,
     docsPath: (options == null ? void 0 : options.docsPath) || "docs",
     injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
-    debug: (options == null ? void 0 : options.debug) ?? false
+    debug: (options == null ? void 0 : options.debug) ?? false,
+    multiLanguage: options == null ? void 0 : options.multiLanguage
   });
-  return core.generateSidebarSync((options == null ? void 0 : options.locale) || "zh");
+  const locale = (options == null ? void 0 : options.locale) || ((options == null ? void 0 : options.multiLanguage) === void 0 ? "auto" : "zh");
+  return core.generateSidebarSync(locale);
 }
 function generateSidebarFromConfig(vitepressConfig, tags, locale = "zh") {
   const core = new SidebarTagsCore({

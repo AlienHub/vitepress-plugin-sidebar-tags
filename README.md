@@ -218,7 +218,8 @@ import {
 createHttpMethodsTag({
   position: 'after',    // 位置：'before' | 'after'
   size: 'xs',          // 大小：'xs' | 'sm' | 'md' | 'lg'
-  variant: 'solid'     // 变体：'solid' | 'outline' | 'soft' | 'subtle'
+  variant: 'solid',    // 变体：'solid' | 'outline' | 'soft' | 'subtle'
+  rounded: 'sm'        // 圆角：'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full'
 })
 
 // 版本标签
@@ -253,6 +254,7 @@ createUpdateTag({
   size: 'sm',                     // 标签大小
   variant: 'outline',             // 样式变体
   color: 'purple',                // 颜色主题
+  rounded: 'lg',                  // 圆角大小
   prefix: '[',                    // 前缀
   suffix: ']',                    // 后缀
   priority: 0,                    // 优先级
@@ -303,6 +305,31 @@ createUpdateTag({
 ### 颜色
 支持 20+ 预设颜色主题：
 `primary`, `secondary`, `success`, `warning`, `error`, `info`, `gray`, `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`
+
+### 圆角
+参考 NuxtUI 设计，支持 8 种圆角尺寸：
+- `none` - 无圆角 (0px)
+- `sm` - 小圆角 (2px)
+- `md` - 中等圆角 (4px) 
+- `lg` - 大圆角 (6px)
+- `xl` - 超大圆角 (8px)
+- `2xl` - 特大圆角 (12px)
+- `3xl` - 极大圆角 (16px)
+- `full` - 完全圆角 (pill 形状)
+
+```typescript
+// 在标签配置中使用圆角
+createHttpMethodsTag({
+  rounded: 'lg'      // 使用大圆角
+})
+
+// 或者在自定义标签中使用
+{
+  field: 'category',
+  rounded: 'full',   // 使用完全圆角
+  // ... 其他配置
+}
+```
 
 ## 📖 API 文档
 

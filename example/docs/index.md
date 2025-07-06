@@ -3,124 +3,42 @@ layout: home
 
 hero:
   name: "VitePress Sidebar Tags"
-  text: "通用标签插件"
-  tagline: "为 VitePress 侧边栏自动添加基于 frontmatter 的多样化标签"
+  text: "智能侧边栏标签插件"
+  tagline: 根据 Markdown Frontmatter 自动为 VitePress 侧边栏添加美观的标签
+  image:
+    src: /logo.svg
+    alt: VitePress Sidebar Tags Plugin
   actions:
     - theme: brand
-      text: 查看示例
-      link: /zh/api/users
+      text: 快速开始
+      link: /introduction
     - theme: alt
-      text: GitHub
+      text: 查看 GitHub
       link: https://github.com/your-username/vitepress-plugin-sidebar-tags
 
 features:
-  - title: 🏷️ 多标签支持
-    details: 支持同时配置多个 frontmatter 字段，每个文档可以显示多个标签
-  - title: 🎨 丰富的样式
-    details: 提供多种预设主题和完全自定义的样式选项，支持 20+ 颜色主题
-  - title: 📍 灵活的位置
-    details: 标签可以放在文本前或后，支持优先级排序
-  - title: 🌈 多种变体
-    details: 支持 solid、outline、soft、subtle 四种样式变体
-  - title: 🌍 完整国际化
-    details: 完整支持多语言配置和暗色模式
-  - title: ⚡ 高性能设计
-    details: 构建时生成，运行时零开销，完全向后兼容
+  - icon: 🚀
+    title: 零配置
+    details: 使用标准 VitePress defineConfig，无需任何套壳函数
+  - icon: 🏷️
+    title: 多标签支持
+    details: 同时显示多个不同类型的标签，HTTP方法、版本、状态等
+  - icon: 🎨
+    title: 丰富样式
+    details: 20+ 颜色主题，4种尺寸，4种变体，8种圆角样式
+  - icon: 🌙
+    title: 暗色模式
+    details: 完美支持 VitePress 暗色主题，自动适应
+  - icon: 🌍
+    title: 国际化
+    details: 完美支持多语言项目，自动路径检测
+  - icon: ⚡
+    title: 高性能
+    details: 构建时生成，运行时无性能损耗
+  - icon: 🎯
+    title: 类型安全
+    details: 完整的 TypeScript 类型支持，开发体验佳
+  - icon: 📝
+    title: 简洁直观
+    details: 用户先定义侧边栏，然后添加标签功能
 ---
-
-## 🚀 新特性展示
-
-### 多标签组合
-在左侧侧边栏中，你可以看到每个 API 文档根据不同的 frontmatter 字段显示了多个标签：
-
-- **状态标签**（前置）：`NEW`、`STABLE`、`BETA`、`EXPERIMENTAL`
-- **HTTP 方法标签**：`GET`、`POST`、`PUT`、`DELETE`
-- **版本标签**：`v1.2.0`、`v1.3.0`、`v2.0.0-alpha`
-- **分类标签**：`CORE`、`ADVANCED`、`EXPERIMENTAL`
-- **更新标签**（前置）：`HOT`
-
-### 快速配置
-
-```typescript
-import { createSidebarTags, createHttpMethodsTag, createVersionTag } from 'vitepress-plugin-sidebar-tags'
-
-const sidebarTags = createSidebarTags({
-  tags: [
-    // 使用预设配置
-    createHttpMethodsTag(),
-    createVersionTag(),
-    
-    // 自定义标签
-    {
-      field: 'status',
-      position: 'before',
-      size: 'xs',
-      variant: 'soft',
-      color: 'success',
-      valueStyles: {
-        'new': { color: 'green' },
-        'experimental': { color: 'red' }
-      }
-    }
-  ]
-})
-```
-
-### 支持的配置选项
-
-- **位置控制**：`position: 'before' | 'after'`
-- **大小选择**：`size: 'xs' | 'sm' | 'md' | 'lg'`
-- **样式变体**：`variant: 'solid' | 'outline' | 'soft' | 'subtle'`
-- **颜色主题**：20+ 预设颜色 + 自定义颜色
-- **优先级排序**：`priority` 控制标签显示顺序
-- **条件显示**：`show` 函数控制标签显示条件
-- **值转换**：`transform` 函数处理显示文本
-
-## 📖 使用指南
-
-### 安装
-
-```bash
-npm install vitepress-plugin-sidebar-tags
-```
-
-### 基本使用
-
-```typescript
-import { defineConfig } from 'vitepress'
-import { createSidebarTags } from 'vitepress-plugin-sidebar-tags'
-
-const sidebarTags = createSidebarTags({
-  tags: [
-    {
-      field: 'method',      // frontmatter 字段名
-      position: 'after',   // 标签位置
-      size: 'xs',          // 标签大小
-      variant: 'solid',    // 样式变体
-      color: 'primary'     // 颜色主题
-    }
-  ]
-})
-
-export default defineConfig({
-  themeConfig: {
-    sidebar: {
-      '/zh/': sidebarTags.generateSidebar('zh')
-    }
-  }
-})
-```
-
-### Markdown frontmatter
-
-```yaml
----
-title: 示例文档
-method: GET
-status: stable
-version: v1.0.0
-category: core
----
-```
-
-这将自动生成对应的标签并注入到侧边栏中！ 

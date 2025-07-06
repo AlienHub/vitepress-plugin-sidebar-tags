@@ -22,6 +22,8 @@ export declare function withSidebarTags(sidebar: DefaultTheme.SidebarItem[], tag
     debug?: boolean;
     /** 语言代码 */
     locale?: string;
+    /** 是否为多语言模式 */
+    multiLanguage?: boolean;
 }): DefaultTheme.SidebarItem[];
 /**
  * 为多路径侧边栏添加标签
@@ -38,6 +40,8 @@ export declare function withMultiSidebarTags(sidebarConfig: DefaultTheme.Sidebar
     injectInProduction?: boolean;
     /** 是否开启调试模式 */
     debug?: boolean;
+    /** 是否为多语言模式 */
+    multiLanguage?: boolean;
 }): DefaultTheme.SidebarMulti;
 /**
  * 自动生成带标签的侧边栏（从文件系统读取）
@@ -55,6 +59,8 @@ export declare function generateSidebar(tags: TagConfig[], options?: {
     debug?: boolean;
     /** 语言代码 */
     locale?: string;
+    /** 是否为多语言模式 */
+    multiLanguage?: boolean;
 }): DefaultTheme.SidebarItem[];
 /**
  * 从VitePress配置生成侧边栏（兼容用法）

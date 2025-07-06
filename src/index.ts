@@ -36,6 +36,8 @@ export function withSidebarTags(
     debug?: boolean
     /** 语言代码 */
     locale?: string
+    /** 是否为多语言模式 */
+    multiLanguage?: boolean
   }
 ): DefaultTheme.SidebarItem[] {
   const core = new SidebarTagsCore({
@@ -43,10 +45,13 @@ export function withSidebarTags(
     sidebar,
     docsPath: options?.docsPath || 'docs',
     injectInProduction: options?.injectInProduction ?? true,
-    debug: options?.debug ?? false
+    debug: options?.debug ?? false,
+    multiLanguage: options?.multiLanguage
   })
   
-  return core.generateSidebarSync(options?.locale || 'zh') as DefaultTheme.SidebarItem[]
+  // 如果没有配置语言且为自动检测模式，使用特殊标识符
+  const locale = options?.locale || (options?.multiLanguage === undefined ? 'auto' : 'zh')
+  return core.generateSidebarSync(locale) as DefaultTheme.SidebarItem[]
 }
 
 /**
@@ -67,6 +72,8 @@ export function withMultiSidebarTags(
     injectInProduction?: boolean
     /** 是否开启调试模式 */
     debug?: boolean
+    /** 是否为多语言模式 */
+    multiLanguage?: boolean
   }
 ): DefaultTheme.SidebarMulti {
   const result: DefaultTheme.SidebarMulti = {}
@@ -77,7 +84,8 @@ export function withMultiSidebarTags(
       const locale = extractLocaleFromPath(path)
       result[path] = withSidebarTags(config, tags, {
         ...options,
-        locale
+        locale,
+        multiLanguage: options?.multiLanguage ?? true // 多路径侧边栏默认为多语言模式
       })
     } else {
       // 保持原有配置（函数类型等）
@@ -114,16 +122,21 @@ export function generateSidebar(
     debug?: boolean
     /** 语言代码 */
     locale?: string
+    /** 是否为多语言模式 */
+    multiLanguage?: boolean
   }
 ): DefaultTheme.SidebarItem[] {
   const core = new SidebarTagsCore({
     tags,
     docsPath: options?.docsPath || 'docs',
     injectInProduction: options?.injectInProduction ?? true,
-    debug: options?.debug ?? false
+    debug: options?.debug ?? false,
+    multiLanguage: options?.multiLanguage
   })
   
-  return core.generateSidebarSync(options?.locale || 'zh') as DefaultTheme.SidebarItem[]
+  // 如果没有配置语言且为自动检测模式，使用特殊标识符
+  const locale = options?.locale || (options?.multiLanguage === undefined ? 'auto' : 'zh')
+  return core.generateSidebarSync(locale) as DefaultTheme.SidebarItem[]
 }
 
 /**

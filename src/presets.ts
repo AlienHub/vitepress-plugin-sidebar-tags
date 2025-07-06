@@ -13,6 +13,7 @@ export const tagPresets: TagPresets = {
     size: 'xs',
     variant: 'solid',
     color: 'primary',
+    rounded: 'sm',
     transform: (value) => value.toUpperCase(),
     valueStyles: {
       'GET': { color: 'success' },
@@ -34,6 +35,7 @@ export const tagPresets: TagPresets = {
     size: 'xs',
     variant: 'outline',
     color: 'blue',
+    rounded: 'md',
     prefix: 'v',
     transform: (value) => value.replace(/^v?/, ''),
     show: (value) => Boolean(value)
@@ -48,6 +50,7 @@ export const tagPresets: TagPresets = {
     size: 'xs',
     variant: 'soft',
     color: 'gray',
+    rounded: 'lg',
     valueStyles: {
       'new': { color: 'green' },
       'updated': { color: 'blue' },
@@ -70,6 +73,7 @@ export const tagPresets: TagPresets = {
     size: 'xs',
     variant: 'solid',
     color: 'success',
+    rounded: 'full',
     valueStyles: {
       'new': { color: 'success' },
       'updated': { color: 'info' },

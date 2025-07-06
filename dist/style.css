@@ -1,5 +1,15 @@
 /* VitePress Sidebar Tags Plugin - Universal Badge System */
 
+/* 确保侧边栏链接的行高和对齐 */
+.VPSidebar .VPSidebarItem .link,
+.vp-sidebar .sidebar-item .link,
+.VPSidebar a,
+.vp-sidebar a {
+  display: flex !important;
+  align-items: center !important;
+  line-height: 1.5 !important;
+}
+
 /* Base tag styles with higher specificity */
 .VPSidebar .sidebar-tag,
 .vp-sidebar .sidebar-tag,
@@ -9,13 +19,15 @@
   margin-right: 6px !important;
   border-radius: 4px !important;
   font-weight: 500 !important;
-  line-height: 1 !important;
+  line-height: 1.2 !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
   border: 1px solid transparent !important;
   vertical-align: middle !important;
   white-space: nowrap !important;
   box-sizing: border-box !important;
+  position: relative !important;
+  top: -1px !important;
 }
 
 /* 前置标签样式 */
@@ -65,6 +77,55 @@
   padding: 4px 10px !important;
   font-size: 12px !important;
   border-radius: 5px !important;
+}
+
+/* Rounded variants - 参考 NuxtUI 设计 */
+.VPSidebar .sidebar-tag.rounded-none,
+.vp-sidebar .sidebar-tag.rounded-none,
+.sidebar-tag.rounded-none {
+  border-radius: 0 !important;
+}
+
+.VPSidebar .sidebar-tag.rounded-sm,
+.vp-sidebar .sidebar-tag.rounded-sm,
+.sidebar-tag.rounded-sm {
+  border-radius: 0.125rem !important; /* 2px */
+}
+
+.VPSidebar .sidebar-tag.rounded-md,
+.vp-sidebar .sidebar-tag.rounded-md,
+.sidebar-tag.rounded-md {
+  border-radius: 0.25rem !important; /* 4px */
+}
+
+.VPSidebar .sidebar-tag.rounded-lg,
+.vp-sidebar .sidebar-tag.rounded-lg,
+.sidebar-tag.rounded-lg {
+  border-radius: 0.375rem !important; /* 6px */
+}
+
+.VPSidebar .sidebar-tag.rounded-xl,
+.vp-sidebar .sidebar-tag.rounded-xl,
+.sidebar-tag.rounded-xl {
+  border-radius: 0.5rem !important; /* 8px */
+}
+
+.VPSidebar .sidebar-tag.rounded-2xl,
+.vp-sidebar .sidebar-tag.rounded-2xl,
+.sidebar-tag.rounded-2xl {
+  border-radius: 0.75rem !important; /* 12px */
+}
+
+.VPSidebar .sidebar-tag.rounded-3xl,
+.vp-sidebar .sidebar-tag.rounded-3xl,
+.sidebar-tag.rounded-3xl {
+  border-radius: 1rem !important; /* 16px */
+}
+
+.VPSidebar .sidebar-tag.rounded-full,
+.vp-sidebar .sidebar-tag.rounded-full,
+.sidebar-tag.rounded-full {
+  border-radius: 9999px !important; /* 完全圆角 */
 }
 
 /* Color themes - Light mode */

@@ -1,6 +1,6 @@
 {
   "name": "vitepress-plugin-sidebar-tags",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A VitePress plugin to automatically add tags to sidebar based on frontmatter",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
