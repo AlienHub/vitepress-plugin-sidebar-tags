@@ -1,27 +1,31 @@
 {
   "name": "vitepress-plugin-sidebar-tags",
-  "version": "0.2.0",
-  "description": "A powerful VitePress plugin to automatically add diverse tags to sidebar based on frontmatter",
-  "type": "module",
+  "version": "0.2.1",
+  "description": "A VitePress plugin to automatically add tags to sidebar based on frontmatter",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./style.css": "./dist/style.css",
-    "./client": "./dist/client.js"
+    "./client": {
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    }
   },
   "files": [
     "dist",
     "README.md",
-    "CSS-INTEGRATION.md"
+    "LICENSE"
   ],
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "prepublishOnly": "pnpm run build",
     "test": "node test/plugin.test.js"
   },
   "keywords": [
@@ -30,39 +34,26 @@
     "sidebar",
     "tags",
     "frontmatter",
-    "documentation",
     "markdown",
-    "vue",
-    "static-site-generator",
-    "docs",
-    "badge",
-    "label",
-    "vitepress-plugin"
+    "documentation"
   ],
-  "author": "Alien Zhou <zhouxiansheng195@gmail.com>",
+  "author": "AlienHub",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:AlienHub/vitepress-plugin-sidebar-tags.git"
+    "url": "git+https://github.com/AlienHub/vitepress-plugin-sidebar-tags.git"
   },
-  "homepage": "https://github.com/AlienHub/vitepress-plugin-sidebar-tags#readme",
   "bugs": {
     "url": "https://github.com/AlienHub/vitepress-plugin-sidebar-tags/issues"
   },
+  "homepage": "https://github.com/AlienHub/vitepress-plugin-sidebar-tags#readme",
   "peerDependencies": {
     "vitepress": "^1.0.0"
-  },
-  "dependencies": {
-    "gray-matter": "^4.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0",
     "vite": "^5.0.0",
-    "vite-plugin-dts": "^3.0.0",
     "vitepress": "^1.0.0"
-  },
-  "engines": {
-    "node": ">=16"
   }
 } 

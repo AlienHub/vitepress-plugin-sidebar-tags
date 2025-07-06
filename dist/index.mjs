@@ -392,56 +392,45 @@ function createStatusTag(overrides) {
 function createUpdateTag(overrides) {
   return { ...tagPresets.update, ...overrides };
 }
-function createSidebarTags(options) {
-  return new SidebarTagsCore(options);
+function withSidebarTags(sidebar, tags, options) {
+  const core = new SidebarTagsCore({
+    tags,
+    sidebar,
+    docsPath: (options == null ? void 0 : options.docsPath) || "docs",
+    injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
+    debug: (options == null ? void 0 : options.debug) ?? false
+  });
+  return core.generateSidebarSync();
 }
-function processSidebar(sidebar, tags, options) {
-  if (Array.isArray(sidebar)) {
-    const core = new SidebarTagsCore({
-      tags,
-      sidebar,
-      // 类型断言
-      docsPath: (options == null ? void 0 : options.docsPath) || "docs",
-      injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
-      debug: (options == null ? void 0 : options.debug) ?? false
-    });
-    return core.generateSidebarSync();
-  } else if (typeof sidebar === "object" && sidebar !== null) {
-    const result = {};
-    for (const [path2, config] of Object.entries(sidebar)) {
-      if (Array.isArray(config)) {
-        const pathCore = new SidebarTagsCore({
-          tags,
-          sidebar: config,
-          // 类型断言
-          docsPath: (options == null ? void 0 : options.docsPath) || "docs",
-          injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
-          debug: (options == null ? void 0 : options.debug) ?? false
-        });
-        result[path2] = pathCore.generateSidebarSync();
-      } else {
-        result[path2] = config;
-      }
+function withMultiSidebarTags(sidebarConfig, tags, options) {
+  const result = {};
+  for (const [path2, config] of Object.entries(sidebarConfig)) {
+    if (Array.isArray(config)) {
+      result[path2] = withSidebarTags(config, tags, options);
+    } else {
+      result[path2] = config;
     }
-    return result;
   }
-  return sidebar;
+  return result;
 }
-function withSidebarTags(themeConfig, tags, options) {
-  if (!themeConfig.sidebar) {
-    return themeConfig;
-  }
-  return {
-    ...themeConfig,
-    sidebar: processSidebar(themeConfig.sidebar, tags, options)
-  };
+function generateSidebar(tags, options) {
+  const core = new SidebarTagsCore({
+    tags,
+    docsPath: (options == null ? void 0 : options.docsPath) || "docs",
+    injectInProduction: (options == null ? void 0 : options.injectInProduction) ?? true,
+    debug: (options == null ? void 0 : options.debug) ?? false
+  });
+  return core.generateSidebarSync();
 }
-function withVitePressConfig(vitepressConfig, tags, locale = "zh") {
+function generateSidebarFromConfig(vitepressConfig, tags, locale = "zh") {
   const core = new SidebarTagsCore({
     tags,
     vitepressConfig
   });
   return core.generateSidebarSync(locale);
+}
+function createSidebarTags(options) {
+  return new SidebarTagsCore(options);
 }
 const cssPath = "vitepress-plugin-sidebar-tags/style.css";
 function createThemeEnhancer() {
@@ -462,8 +451,9 @@ export {
   createUpdateTag,
   createVersionTag,
   cssPath,
-  processSidebar,
-  withSidebarTags,
-  withVitePressConfig
+  generateSidebar,
+  generateSidebarFromConfig,
+  withMultiSidebarTags,
+  withSidebarTags
 };
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index.mjs.map

@@ -6,7 +6,7 @@ import { DefaultTheme } from 'vitepress';
 export declare function createHttpMethodsTag(overrides?: Partial<TagConfig>): TagConfig;
 
 /**
- * 创建侧边栏标签实例
+ * 创建侧边栏标签实例（高级用法）
  */
 export declare function createSidebarTags(options: SidebarTagsOptions): SidebarTagsCore;
 
@@ -63,6 +63,32 @@ export declare interface FrontmatterData {
 }
 
 /**
+ * 自动生成带标签的侧边栏（从文件系统读取）
+ *
+ * @param tags 标签配置数组
+ * @param options 可选配置
+ * @returns 处理后的侧边栏数据
+ */
+export declare function generateSidebar(tags: TagConfig[], options?: {
+    /** 文档根目录路径 */
+    docsPath?: string;
+    /** 是否在生产环境注入标签 */
+    injectInProduction?: boolean;
+    /** 是否开启调试模式 */
+    debug?: boolean;
+}): DefaultTheme.SidebarItem[];
+
+/**
+ * 从VitePress配置生成侧边栏（兼容用法）
+ *
+ * @param vitepressConfig VitePress配置对象
+ * @param tags 标签配置数组
+ * @param locale 语言代码
+ * @returns 处理后的侧边栏数据
+ */
+export declare function generateSidebarFromConfig(vitepressConfig: any, tags: TagConfig[], locale?: string): DefaultTheme.SidebarItem[];
+
+/**
  * 向后兼容的简化配置（会自动转换为TagConfig）
  */
 export declare interface LegacyTagsOptions {
@@ -82,24 +108,6 @@ export declare interface LegacyTagsOptions {
      */
     tagGenerator?: (tagValue: string, tagField: string) => string;
 }
-
-/**
- * 直接处理 sidebar 配置对象（推荐用法）
- * 在语言特定的配置文件中使用，如 ./config/zh.ts 或 ./config/en.ts
- *
- * @param sidebar 原始的 sidebar 配置
- * @param tags 标签配置数组
- * @param options 可选的配置选项
- * @returns 处理后的 sidebar 配置
- */
-export declare function processSidebar(sidebar: DefaultTheme.Sidebar, tags: TagConfig[], options?: {
-    /** 文档根目录路径 */
-    docsPath?: string;
-    /** 是否在生产环境注入标签 */
-    injectInProduction?: boolean;
-    /** 是否开启调试模式 */
-    debug?: boolean;
-}): DefaultTheme.Sidebar;
 
 export declare interface SidebarItem extends DefaultTheme.SidebarItem {
     base?: string;
@@ -292,28 +300,37 @@ export declare type TagSize = 'xs' | 'sm' | 'md' | 'lg';
 export declare type TagVariant = 'solid' | 'outline' | 'soft' | 'subtle';
 
 /**
- * 处理主题配置对象，自动处理其中的 sidebar 配置
+ * 为多路径侧边栏添加标签
  *
- * @param themeConfig 主题配置对象
+ * @param sidebarConfig 多路径侧边栏配置
  * @param tags 标签配置数组
- * @param options 可选的配置选项
- * @returns 处理后的主题配置
+ * @param options 可选配置
+ * @returns 处理后的多路径侧边栏配置
  */
-export declare function withSidebarTags<T extends {
-    sidebar?: DefaultTheme.Sidebar;
-}>(themeConfig: T, tags: TagConfig[], options?: {
+export declare function withMultiSidebarTags(sidebarConfig: DefaultTheme.SidebarMulti, tags: TagConfig[], options?: {
     /** 文档根目录路径 */
     docsPath?: string;
     /** 是否在生产环境注入标签 */
     injectInProduction?: boolean;
     /** 是否开启调试模式 */
     debug?: boolean;
-}): T;
+}): DefaultTheme.SidebarMulti;
 
 /**
- * 使用VitePress配置创建侧边栏（兼容函数）
- * @deprecated 推荐使用 processSidebar 或 withSidebarTags
+ * 为侧边栏添加标签（推荐用法）
+ *
+ * @param sidebar 用户的侧边栏配置
+ * @param tags 标签配置数组
+ * @param options 可选配置
+ * @returns 处理后的侧边栏数据
  */
-export declare function withVitePressConfig(vitepressConfig: any, tags: TagConfig[], locale?: string): SidebarItem[];
+export declare function withSidebarTags(sidebar: DefaultTheme.SidebarItem[], tags: TagConfig[], options?: {
+    /** 文档根目录路径 */
+    docsPath?: string;
+    /** 是否在生产环境注入标签 */
+    injectInProduction?: boolean;
+    /** 是否开启调试模式 */
+    debug?: boolean;
+}): DefaultTheme.SidebarItem[];
 
 export { }

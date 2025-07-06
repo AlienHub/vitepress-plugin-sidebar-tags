@@ -2,147 +2,207 @@
 
 一个强大的 VitePress 插件，可以根据 markdown 文件的 frontmatter 自动在侧边栏中添加各种标签。
 
-## 🎯 快速开始
+## 🚀 快速开始
+
+### 基础用法（推荐）
+
+用户先定义自己的侧边栏配置，然后用 `withSidebarTags` 函数包装：
 
 ```typescript
-// 推荐用法：从 VitePress 配置获取
-import { withVitePressConfig, createHttpMethodsTag } from 'vitepress-plugin-sidebar-tags'
-
-config.themeConfig.sidebar['/api/'] = withVitePressConfig(
-  config, 
-  [createHttpMethodsTag(), createStatusTag()],
-  'zh'
-)
-```
-
-```yaml
-# 在你的 Markdown 中添加 frontmatter
----
-method: GET
-status: stable
----
-```
-
-结果：在侧边栏中自动显示 `GET` `STABLE` 标签 🏷️
-
-## 📋 简洁 API
-
-只有两个主要函数，简单易用：
-
-| 函数 | 用途 | 适用场景 |
-|------|------|----------|
-| `withVitePressConfig(config, tags, locale?)` | 处理现有配置 | 已有侧边栏配置 |
-| `createSidebarTags(options)` | 创建插件实例 | 动态生成、文件读取 |
-
-## ✨ 特性
-
-- 🏷️ **多标签支持**：一个文档可同时显示多个标签
-- 📍 **灵活位置**：标签可前置或后置，支持优先级排序
-- 🎨 **丰富样式**：20+ 预设颜色主题 + 4种变体（solid, outline, soft, subtle）
-- ⚙️ **强大配置**：条件显示、值转换、自定义样式
-- 🔧 **简洁 API**：支持标准的 VitePress 配置结构
-- ✅ **完全可选**：不配置不会有任何副作用
-- 🌍 **多语言支持**：完美适配 VitePress 多语言配置
-
-## 📦 安装
-
-```bash
-npm install vitepress-plugin-sidebar-tags
-# 或者
-pnpm add vitepress-plugin-sidebar-tags
-```
-
-## 🚀 使用方法
-
-### 方法 1：处理现有的 VitePress 配置（推荐）
-
-如果你已经在 VitePress 配置中定义了侧边栏，可以直接处理现有配置：
-
-```typescript
-// .vitepress/config.ts
+// .vitepress/config.mts
 import { defineConfig } from 'vitepress'
-import { withVitePressConfig, createHttpMethodsTag, createVersionTag } from 'vitepress-plugin-sidebar-tags'
+import { withSidebarTags, createHttpMethodsTag, createVersionTag } from 'vitepress-plugin-sidebar-tags'
 
-const config = defineConfig({
+// 定义你的侧边栏配置
+const sidebar = [
+  {
+    text: 'API 接口',
+    items: [
+      { text: '用户管理', link: '/api/users' },
+      { text: '创建用户', link: '/api/create-user' },
+      { text: '更新用户', link: '/api/update-user' },
+      { text: '删除用户', link: '/api/delete-user' }
+    ]
+  }
+]
+
+export default defineConfig({
+  title: 'My Docs',
+  description: 'Documentation with tags',
+  
   themeConfig: {
-    sidebar: {
-      '/api/': [
-        {
-          text: "API 文档",
-          items: [
-            { text: "用户管理", link: "/api/users" },
-            { text: "创建用户", link: "/api/create-user" }
-          ]
+    // 使用函数包装，添加标签功能
+    sidebar: withSidebarTags(sidebar, [
+      createHttpMethodsTag({ position: 'after' }),
+      createVersionTag({ position: 'before' }),
+      {
+        field: 'status',
+        position: 'before',
+        size: 'xs',
+        variant: 'soft',
+        valueStyles: {
+          'STABLE': { color: 'success' },
+          'BETA': { color: 'warning' },
+          'EXPERIMENTAL': { color: 'error' }
         }
-      ]
-    }
+      }
+    ], {
+      docsPath: 'docs',
+      debug: false
+    })
   }
 })
-
-// 处理现有的侧边栏配置
-config.themeConfig!.sidebar!['/api/'] = withVitePressConfig(
-  config, 
-  [
-    createHttpMethodsTag(),
-    createVersionTag(),
-    {
-      field: 'status',
-      position: 'before',
-      variant: 'soft',
-      color: 'success'
-    }
-  ],
-  'zh'
-)
-
-export default config
 ```
 
-### 方法 2：动态生成侧边栏
+### 多路径侧边栏
 
-使用 `createSidebarTags` 创建插件实例，支持多种数据源：
+对于多路径侧边栏，使用 `withMultiSidebarTags` 函数：
 
 ```typescript
-import { createSidebarTags, createHttpMethodsTag } from 'vitepress-plugin-sidebar-tags'
+import { defineConfig } from 'vitepress'
+import { withMultiSidebarTags, createHttpMethodsTag, createVersionTag } from 'vitepress-plugin-sidebar-tags'
 
-// 从文件读取
-const sidebarTags = createSidebarTags({
-  tags: [createHttpMethodsTag(), createVersionTag()],
-  sidebarPath: 'sidebar',  // 从 docs/sidebar/zh.json 读取
-  docsPath: 'docs'
-})
-
-// 或者使用函数动态生成
-const sidebarTags = createSidebarTags({
-  tags: [createHttpMethodsTag()],
-  sidebar: () => [
+// 定义多路径侧边栏配置
+const sidebarConfig = {
+  '/api/': [
     {
-      text: "动态API",
+      text: 'API 接口',
       items: [
-        { text: "用户接口", link: "/api/users" },
-        { text: "产品接口", link: "/api/products" }
+        { text: '用户管理', link: '/api/users' },
+        { text: '创建用户', link: '/api/create-user' }
+      ]
+    }
+  ],
+  '/guide/': [
+    {
+      text: '指南',
+      items: [
+        { text: '快速开始', link: '/guide/getting-started' },
+        { text: '进阶使用', link: '/guide/advanced' }
       ]
     }
   ]
-})
-
-// 或者从现有配置获取
-const sidebarTags = createSidebarTags({
-  tags: [createHttpMethodsTag()],
-  vitepressConfig: myConfig  // 从配置对象读取 sidebar
-})
+}
 
 export default defineConfig({
   themeConfig: {
-    sidebar: {
-      '/zh/': sidebarTags.generateSidebarSync('zh'),
-      '/en/': sidebarTags.generateSidebarSync('en')
+    sidebar: withMultiSidebarTags(sidebarConfig, [
+      createHttpMethodsTag({ position: 'after' }),
+      createVersionTag({ position: 'before' })
+    ])
+  }
+})
+```
+
+### 多语言项目
+
+多语言项目中每种语言分别配置：
+
+```typescript
+import { defineConfig } from 'vitepress'
+import { withSidebarTags, createHttpMethodsTag } from 'vitepress-plugin-sidebar-tags'
+
+// 中文侧边栏
+const zhSidebar = [
+  {
+    text: 'API 接口',
+    items: [
+      { text: '用户管理', link: '/zh/api/users' },
+      { text: '创建用户', link: '/zh/api/create-user' }
+    ]
+  }
+]
+
+// 英文侧边栏
+const enSidebar = [
+  {
+    text: 'API',
+    items: [
+      { text: 'Users', link: '/en/api/users' },
+      { text: 'Create User', link: '/en/api/create-user' }
+    ]
+  }
+]
+
+export default defineConfig({
+  locales: {
+    root: {
+      label: '中文',
+      lang: 'zh',
+      themeConfig: {
+        sidebar: withSidebarTags(zhSidebar, [
+          createHttpMethodsTag({ position: 'after' })
+        ])
+      }
+    },
+    en: {
+      label: 'English',
+      lang: 'en',
+      themeConfig: {
+        sidebar: withSidebarTags(enSidebar, [
+          createHttpMethodsTag({ position: 'after' })
+        ])
+      }
     }
   }
 })
 ```
 
-## 🎨 标签配置
+### 自动生成侧边栏
+
+如果你不想手动配置侧边栏，可以让插件从文件系统自动生成：
+
+```typescript
+import { defineConfig } from 'vitepress'
+import { generateSidebar, createHttpMethodsTag, createVersionTag } from 'vitepress-plugin-sidebar-tags'
+
+export default defineConfig({
+  themeConfig: {
+    // 从文件系统自动生成侧边栏
+    sidebar: generateSidebar([
+      createHttpMethodsTag({ position: 'after' }),
+      createVersionTag({ position: 'before' })
+    ], {
+      docsPath: 'docs',
+      debug: false
+    })
+  }
+})
+```
+
+## 🎯 Frontmatter 配置
+
+在你的 markdown 文件中添加 frontmatter：
+
+```markdown
+---
+method: GET
+version: v1.0
+status: STABLE
+category: user
+---
+
+# 用户管理 API
+
+这是用户管理接口的文档...
+```
+
+## 🎨 CSS 样式导入
+
+在你的主题文件中导入 CSS：
+
+```typescript
+// .vitepress/theme/index.ts
+import DefaultTheme from 'vitepress/theme'
+import 'vitepress-plugin-sidebar-tags/style.css'
+
+export default {
+  extends: DefaultTheme,
+  // ... 其他配置
+}
+```
+
+## 🏷️ 标签配置
 
 ### 预设标签
 
@@ -226,82 +286,115 @@ createUpdateTag({
 }
 ```
 
-## 🎯 Markdown Frontmatter
+## 🌈 样式主题
 
-在你的 Markdown 文件中添加 frontmatter：
+### 尺寸
+- `xs` - 最小
+- `sm` - 小（默认）
+- `md` - 中等
+- `lg` - 大
 
-```yaml
----
-title: 用户管理 API
-method: GET
-status: stable  
-version: v1.2.0
-category: core
-update: new
----
+### 变体
+- `solid` - 实心（默认）
+- `outline` - 轮廓
+- `soft` - 柔和
+- `subtle` - 精细
 
-# 用户管理 API
-
-这是一个稳定的核心 API...
-```
-
-## 🌈 颜色主题
-
+### 颜色
 支持 20+ 预设颜色主题：
+`primary`, `secondary`, `success`, `warning`, `error`, `info`, `gray`, `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`
 
-- `primary` - 主色调
-- `success` - 成功绿色  
-- `warning` - 警告橙色
-- `error` - 错误红色
-- `info` - 信息蓝色
-- `gray` - 灰色
-- `red`, `pink`, `purple`, `indigo`, `blue`, `cyan`, `teal`, `green`, `lime`, `yellow`, `orange`
+## 📖 API 文档
 
-## 🔧 高级配置
+### `withSidebarTags(sidebar, tags, options?)`
 
-### 生产环境控制
+为侧边栏添加标签（推荐用法）。
+
+**参数：**
+- `sidebar` - 用户的侧边栏配置
+- `tags` - 标签配置数组
+- `options` - 可选配置
+  - `docsPath` - 文档根目录路径（默认: 'docs'）
+  - `injectInProduction` - 是否在生产环境注入标签（默认: true）
+  - `debug` - 是否开启调试模式（默认: false）
+
+**返回：** `DefaultTheme.SidebarItem[]`
+
+### `withMultiSidebarTags(sidebarConfig, tags, options?)`
+
+为多路径侧边栏添加标签。
+
+**参数：**
+- `sidebarConfig` - 多路径侧边栏配置
+- `tags` - 标签配置数组
+- `options` - 可选配置（同上）
+
+**返回：** `DefaultTheme.SidebarMulti`
+
+### `generateSidebar(tags, options?)`
+
+自动生成带标签的侧边栏（从文件系统读取）。
+
+**参数：**
+- `tags` - 标签配置数组
+- `options` - 可选配置（同上）
+
+**返回：** `DefaultTheme.SidebarItem[]`
+
+### `generateSidebarFromConfig(vitepressConfig, tags, locale?)`
+
+从VitePress配置生成侧边栏（兼容用法）。
+
+**参数：**
+- `vitepressConfig` - VitePress配置对象
+- `tags` - 标签配置数组
+- `locale` - 语言代码（默认: 'zh'）
+
+**返回：** `DefaultTheme.SidebarItem[]`
+
+### `createSidebarTags(options)`
+
+创建侧边栏标签实例（高级用法）。
+
+**参数：**
+- `options` - 标签配置选项
+
+### 预设标签创建函数
+
+- `createHttpMethodsTag(options?)` - 创建 HTTP 方法标签
+- `createVersionTag(options?)` - 创建版本标签
+- `createStatusTag(options?)` - 创建状态标签
+- `createUpdateTag(options?)` - 创建更新标签
+
+## 🔧 调试
+
+如果标签没有正确显示，可以开启调试模式：
 
 ```typescript
-createSidebarTags({
-  tags: [...],
-  injectInProduction: false,  // 生产环境不注入标签
-  debug: true                 // 开启调试模式
+withSidebarTags(sidebar, tags, {
+  debug: true  // 开启调试模式
 })
 ```
 
-### 多语言支持
+## ✨ 特点
 
-```typescript
-createSidebarTags({
-  tags: [...],
-  locales: ['zh', 'en', 'ja'],
-  sidebarPath: 'sidebar'
-})
+- 🚀 **零配置** - 使用标准 VitePress `defineConfig`，无需任何套壳
+- 🏷️ **多标签支持** - 同时显示多个不同类型的标签
+- 🎨 **丰富样式** - 20+ 颜色主题，4种尺寸，4种变体
+- 🌙 **暗色模式** - 完美支持 VitePress 暗色主题
+- 🌍 **国际化** - 完美支持多语言项目
+- ⚡ **高性能** - 构建时生成，运行时无性能损耗
+- 🎯 **类型安全** - 完整的 TypeScript 类型支持
+- 📝 **简洁直观** - 用户先定义侧边栏，然后添加标签
 
-// 使用
-sidebarTags.generateSidebarSync('zh')
-sidebarTags.generateSidebarSync('en')
-```
+## 📝 示例项目
 
-### 异步数据源
+参考 `example` 目录中的完整示例项目。
 
-```typescript
-createSidebarTags({
-  tags: [...],
-  sidebar: async () => {
-    const data = await fetch('/api/sidebar')
-    return data.json()
-  }
-})
+## 🤝 贡献
 
-// 使用异步方法
-const sidebar = await sidebarTags.generateSidebar('zh')
-```
+欢迎提交 Issue 和 Pull Request！
 
-## 📝 完整示例
+## 📄 许可证
 
-查看 [example](./example/) 目录获取完整的使用示例。
-
-## 📄 License
-
-MIT License 
+MIT 

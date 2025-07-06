@@ -21,4 +21,4 @@ export {
   setupClient,
   styleFile
 };
-//# sourceMappingURL=client.js.map
+//# sourceMappingURL=client.mjs.map

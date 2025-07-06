@@ -17,23 +17,15 @@ export {
 } from './presets'
 
 /**
- * 创建侧边栏标签实例
- */
-export function createSidebarTags(options: SidebarTagsOptions): SidebarTagsCore {
-  return new SidebarTagsCore(options)
-}
-
-/**
- * 直接处理 sidebar 配置对象（推荐用法）
- * 在语言特定的配置文件中使用，如 ./config/zh.ts 或 ./config/en.ts
+ * 为侧边栏添加标签（推荐用法）
  * 
- * @param sidebar 原始的 sidebar 配置
+ * @param sidebar 用户的侧边栏配置
  * @param tags 标签配置数组
- * @param options 可选的配置选项
- * @returns 处理后的 sidebar 配置
+ * @param options 可选配置
+ * @returns 处理后的侧边栏数据
  */
-export function processSidebar(
-  sidebar: DefaultTheme.Sidebar,
+export function withSidebarTags(
+  sidebar: DefaultTheme.SidebarItem[],
   tags: TagConfig[],
   options?: {
     /** 文档根目录路径 */
@@ -43,56 +35,60 @@ export function processSidebar(
     /** 是否开启调试模式 */
     debug?: boolean
   }
-): DefaultTheme.Sidebar {
-  // 处理不同类型的 sidebar 配置
-  if (Array.isArray(sidebar)) {
-    // 简单数组形式
-    const core = new SidebarTagsCore({
-      tags,
-      sidebar: sidebar as SidebarItem[], // 类型断言
-      docsPath: options?.docsPath || 'docs',
-      injectInProduction: options?.injectInProduction ?? true,
-      debug: options?.debug ?? false
-    })
-    return core.generateSidebarSync() as DefaultTheme.SidebarItem[]
-  } else if (typeof sidebar === 'object' && sidebar !== null) {
-    // 对象形式（多路径）
-    const result: DefaultTheme.SidebarMulti = {}
-    
-    for (const [path, config] of Object.entries(sidebar)) {
-      if (Array.isArray(config)) {
-        // 为每个路径创建独立的核心实例
-        const pathCore = new SidebarTagsCore({
-          tags,
-          sidebar: config as SidebarItem[], // 类型断言
-          docsPath: options?.docsPath || 'docs',
-          injectInProduction: options?.injectInProduction ?? true,
-          debug: options?.debug ?? false
-        })
-        result[path] = pathCore.generateSidebarSync() as DefaultTheme.SidebarItem[]
-      } else {
-        // 保持原有配置
-        result[path] = config
-      }
+): DefaultTheme.SidebarItem[] {
+  const core = new SidebarTagsCore({
+    tags,
+    sidebar,
+    docsPath: options?.docsPath || 'docs',
+    injectInProduction: options?.injectInProduction ?? true,
+    debug: options?.debug ?? false
+  })
+  
+  return core.generateSidebarSync() as DefaultTheme.SidebarItem[]
+}
+
+/**
+ * 为多路径侧边栏添加标签
+ * 
+ * @param sidebarConfig 多路径侧边栏配置
+ * @param tags 标签配置数组
+ * @param options 可选配置
+ * @returns 处理后的多路径侧边栏配置
+ */
+export function withMultiSidebarTags(
+  sidebarConfig: DefaultTheme.SidebarMulti,
+  tags: TagConfig[],
+  options?: {
+    /** 文档根目录路径 */
+    docsPath?: string
+    /** 是否在生产环境注入标签 */
+    injectInProduction?: boolean
+    /** 是否开启调试模式 */
+    debug?: boolean
+  }
+): DefaultTheme.SidebarMulti {
+  const result: DefaultTheme.SidebarMulti = {}
+  
+  for (const [path, config] of Object.entries(sidebarConfig)) {
+    if (Array.isArray(config)) {
+      result[path] = withSidebarTags(config, tags, options)
+    } else {
+      // 保持原有配置（函数类型等）
+      result[path] = config
     }
-    
-    return result
   }
-
-  // 返回原始配置（处理函数类型等）
-  return sidebar
+  
+  return result
 }
 
 /**
- * 处理主题配置对象，自动处理其中的 sidebar 配置
+ * 自动生成带标签的侧边栏（从文件系统读取）
  * 
- * @param themeConfig 主题配置对象
  * @param tags 标签配置数组
- * @param options 可选的配置选项
- * @returns 处理后的主题配置
+ * @param options 可选配置
+ * @returns 处理后的侧边栏数据
  */
-export function withSidebarTags<T extends { sidebar?: DefaultTheme.Sidebar }>(
-  themeConfig: T,
+export function generateSidebar(
   tags: TagConfig[],
   options?: {
     /** 文档根目录路径 */
@@ -102,31 +98,42 @@ export function withSidebarTags<T extends { sidebar?: DefaultTheme.Sidebar }>(
     /** 是否开启调试模式 */
     debug?: boolean
   }
-): T {
-  if (!themeConfig.sidebar) {
-    return themeConfig
-  }
-
-  return {
-    ...themeConfig,
-    sidebar: processSidebar(themeConfig.sidebar, tags, options)
-  }
+): DefaultTheme.SidebarItem[] {
+  const core = new SidebarTagsCore({
+    tags,
+    docsPath: options?.docsPath || 'docs',
+    injectInProduction: options?.injectInProduction ?? true,
+    debug: options?.debug ?? false
+  })
+  
+  return core.generateSidebarSync() as DefaultTheme.SidebarItem[]
 }
 
 /**
- * 使用VitePress配置创建侧边栏（兼容函数）
- * @deprecated 推荐使用 processSidebar 或 withSidebarTags
+ * 从VitePress配置生成侧边栏（兼容用法）
+ * 
+ * @param vitepressConfig VitePress配置对象
+ * @param tags 标签配置数组
+ * @param locale 语言代码
+ * @returns 处理后的侧边栏数据
  */
-export function withVitePressConfig(
+export function generateSidebarFromConfig(
   vitepressConfig: any,
   tags: TagConfig[],
   locale = 'zh'
-): SidebarItem[] {
+): DefaultTheme.SidebarItem[] {
   const core = new SidebarTagsCore({
     tags,
     vitepressConfig
   })
-  return core.generateSidebarSync(locale)
+  return core.generateSidebarSync(locale) as DefaultTheme.SidebarItem[]
+}
+
+/**
+ * 创建侧边栏标签实例（高级用法）
+ */
+export function createSidebarTags(options: SidebarTagsOptions): SidebarTagsCore {
+  return new SidebarTagsCore(options)
 }
 
 /**
@@ -140,10 +147,8 @@ export const cssPath = 'vitepress-plugin-sidebar-tags/style.css'
 export function createThemeEnhancer() {
   return {
     enhanceApp({ app }: any) {
-      // 客户端环境下动态导入CSS
+      // 客户端环境下的提示
       if (typeof window !== 'undefined') {
-        // 注意：这里不能直接导入，因为打包时会有问题
-        // 用户需要在主题文件中手动导入CSS
         console.log('VitePress Sidebar Tags: Please import CSS in your theme file')
       }
     }
