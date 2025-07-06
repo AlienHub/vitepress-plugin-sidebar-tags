@@ -119,3 +119,8 @@ public
 test-*.js
 debug-*.js
 debug-*.cjs
+
+# VitePress build and cache files
+.vitepress/cache/
+.vitepress/dist/
+*.temp.md
