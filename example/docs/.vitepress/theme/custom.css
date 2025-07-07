@@ -2,20 +2,32 @@
  * 自定义样式 - VitePress Sidebar Tags Plugin 展示网站
  */
 
-/* 品牌颜色定制 */
+/* 品牌颜色定制 - 使用更高优先级 */
 :root {
-  --vp-c-brand-1: #3b82f6;
-  --vp-c-brand-2: #60a5fa;
-  --vp-c-brand-3: #93c5fd;
-  --vp-c-brand-soft: rgba(59, 130, 246, 0.14);
+  --vp-c-brand-1: #BD34FE !important;
+  --vp-c-brand-2: #D946EF !important;
+  --vp-c-brand-3: #E879F9 !important;
+  --vp-c-brand-soft: rgba(189, 52, 254, 0.14) !important;
+  
+  /* VitePress 内置变量覆盖 */
+  --vp-c-brand: #BD34FE !important;
+  --vp-button-brand-bg: #BD34FE !important;
+  --vp-button-brand-hover-bg: #A21CAF !important;
+  --vp-button-brand-active-bg: #86198F !important;
 }
 
 /* 暗色模式品牌颜色 */
 .dark {
-  --vp-c-brand-1: #60a5fa;
-  --vp-c-brand-2: #3b82f6;
-  --vp-c-brand-3: #1d4ed8;
-  --vp-c-brand-soft: rgba(96, 165, 250, 0.16);
+  --vp-c-brand-1: #E879F9 !important;
+  --vp-c-brand-2: #BD34FE !important;
+  --vp-c-brand-3: #A21CAF !important;
+  --vp-c-brand-soft: rgba(232, 121, 249, 0.16) !important;
+  
+  /* VitePress 内置变量覆盖 */
+  --vp-c-brand: #E879F9 !important;
+  --vp-button-brand-bg: #E879F9 !important;
+  --vp-button-brand-hover-bg: #BD34FE !important;
+  --vp-button-brand-active-bg: #A21CAF !important;
 }
 
 /* 增强侧边栏标签的展示效果 */
@@ -30,12 +42,24 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 首页英雄区域样式增强 */
-.VPHero .title {
-  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-3));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* 首页英雄区域样式增强 - 强制紫色 */
+.VPHero .title,
+.VPHero .name {
+  background: linear-gradient(135deg, #BD34FE, #E879F9) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* 强制品牌按钮为紫色 */
+.VPButton.brand {
+  background-color: #BD34FE !important;
+  border-color: #BD34FE !important;
+}
+
+.VPButton.brand:hover {
+  background-color: #A21CAF !important;
+  border-color: #A21CAF !important;
 }
 
 /* 代码块样式增强 */

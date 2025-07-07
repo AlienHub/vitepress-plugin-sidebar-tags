@@ -47,7 +47,7 @@ export default defineConfig({
   
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['meta', { name: 'theme-color', content: '#3c82f6' }],
+    ['meta', { name: 'theme-color', content: '#BD34FE' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:locale', content: 'zh-CN' }],
     ['meta', { property: 'og:title', content: 'VitePress Sidebar Tags Plugin' }],
@@ -76,15 +76,16 @@ export default defineConfig({
     sidebar: withSidebarTags(sidebar, [
       // HTTP 方法标签
       createHttpMethodsTag({
-        rounded: 'sm',
-        size: 'xs'
+        rounded: 'full',
+        size: 'sm',
+        variant: 'soft',
       }),
       
       // 版本标签
       createVersionTag({
         rounded: 'md',
-        size: 'xs',
-        color: 'blue'
+        size: 'lg',
+        variant: 'subtle',
       }),
       
       // 状态标签
