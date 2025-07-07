@@ -1,5 +1,4 @@
 import { DefaultTheme } from 'vitepress';
-
 /**
  * 标签位置
  */

@@ -18,15 +18,14 @@ export default defineConfig({
         client: resolve(__dirname, 'src/client/index.ts')
       },
       name: 'VitePressPluginSidebarTags',
-      formats: ['es']
+      formats: ['es', 'cjs']
     },
     rollupOptions: {
       external: [
         'vitepress',
         'vue',
         'fs',
-        'path',
-        'gray-matter'
+        'path'
       ],
       output: {
         globals: {

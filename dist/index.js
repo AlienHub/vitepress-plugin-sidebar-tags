@@ -1,5 +1,7 @@
-import fs$1 from "fs";
-import path from "path";
+"use strict";
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+const fs$1 = require("fs");
+const path = require("path");
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
@@ -3677,18 +3679,16 @@ function createThemeEnhancer() {
     }
   };
 }
-export {
-  SidebarTagsCore,
-  createHttpMethodsTag,
-  createSidebarTags,
-  createStatusTag,
-  createThemeEnhancer,
-  createUpdateTag,
-  createVersionTag,
-  cssPath,
-  generateSidebar,
-  generateSidebarFromConfig,
-  withMultiSidebarTags,
-  withSidebarTags
-};
-//# sourceMappingURL=index.mjs.map
+exports.SidebarTagsCore = SidebarTagsCore;
+exports.createHttpMethodsTag = createHttpMethodsTag;
+exports.createSidebarTags = createSidebarTags;
+exports.createStatusTag = createStatusTag;
+exports.createThemeEnhancer = createThemeEnhancer;
+exports.createUpdateTag = createUpdateTag;
+exports.createVersionTag = createVersionTag;
+exports.cssPath = cssPath;
+exports.generateSidebar = generateSidebar;
+exports.generateSidebarFromConfig = generateSidebarFromConfig;
+exports.withMultiSidebarTags = withMultiSidebarTags;
+exports.withSidebarTags = withSidebarTags;
+//# sourceMappingURL=index.js.map

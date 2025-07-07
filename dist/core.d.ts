@@ -1,5 +1,4 @@
 import { SidebarTagsOptions, SidebarItem } from './types';
-
 export declare class SidebarTagsCore {
     private options;
     private tagConfigs;

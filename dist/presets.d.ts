@@ -1,5 +1,4 @@
 import { TagConfig, TagPresets } from './types';
-
 /**
  * 预设标签配置
  */

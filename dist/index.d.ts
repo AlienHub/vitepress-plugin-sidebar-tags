@@ -1,7 +1,6 @@
 import { SidebarTagsOptions, TagConfig } from './types';
 import { DefaultTheme } from 'vitepress';
 import { SidebarTagsCore } from './core';
-
 export type * from './types';
 export { SidebarTagsCore };
 export { createHttpMethodsTag, createVersionTag, createStatusTag, createUpdateTag } from './presets';

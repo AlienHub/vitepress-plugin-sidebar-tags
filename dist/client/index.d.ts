@@ -1,5 +1,4 @@
 import { Theme } from 'vitepress';
-
 /**
  * 客户端插件设置
  */

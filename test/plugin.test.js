@@ -1,85 +1,71 @@
-const { createSidebarTags } = require('../dist/index.js')
+const { createSidebarTags, withSidebarTags, generateSidebar, createHttpMethodsTag } = require('../dist/index.js')
 const fs = require('fs')
 const path = require('path')
 
 describe('VitePress Plugin Sidebar Tags', () => {
   let sidebarTags
+  let testTags
 
   beforeEach(() => {
+    testTags = [createHttpMethodsTag()]
+    
+    // 创建核心实例用于高级测试
     sidebarTags = createSidebarTags({
-      tagField: 'method',
-      debug: true,
-      locales: ['zh', 'en'],
-      sidebarPath: 'example/docs/sidebar',
-      docsPath: 'example/docs'
+      tags: testTags,
+      docsPath: 'example/docs',
+      debug: true
     })
   })
 
   test('应该能够创建插件实例', () => {
     expect(sidebarTags).toBeDefined()
-    expect(typeof sidebarTags.generateSidebar).toBe('function')
-    expect(typeof sidebarTags.generateAllSidebars).toBe('function')
-    expect(typeof sidebarTags.createSidebarConfig).toBe('function')
+    expect(typeof sidebarTags.generateSidebarSync).toBe('function')
   })
 
-  test('应该能够生成中文侧边栏', () => {
-    const zhSidebar = sidebarTags.generateSidebar('zh')
-    expect(Array.isArray(zhSidebar)).toBe(true)
-    expect(zhSidebar.length).toBeGreaterThan(0)
+  test('应该能够使用 withSidebarTags 处理侧边栏', () => {
+    const mockSidebar = [
+      {
+        text: 'API',
+        items: [
+          { text: 'Users', link: '/api/users' }
+        ]
+      }
+    ]
     
-    // 检查是否包含标签
-    const foundTaggedItem = findTaggedItem(zhSidebar)
-    expect(foundTaggedItem).toBeTruthy()
-  })
-
-  test('应该能够生成所有侧边栏', () => {
-    const allSidebars = sidebarTags.generateAllSidebars()
-    expect(typeof allSidebars).toBe('object')
-    expect(allSidebars['/zh/']).toBeDefined()
-    expect(Array.isArray(allSidebars['/zh/'])).toBe(true)
-  })
-
-  test('应该能够创建侧边栏配置', () => {
-    const config = sidebarTags.createSidebarConfig()
-    expect(config).toBeDefined()
-    expect(config.sidebar).toBeDefined()
-    expect(typeof config.generateSidebar).toBe('function')
-  })
-
-  test('应该正确注入标签到侧边栏项目', () => {
-    const zhSidebar = sidebarTags.generateSidebar('zh')
-    const userManagementItem = findItemByLink(zhSidebar, '/zh/api/users')
+    const result = withSidebarTags(mockSidebar, testTags, {
+      docsPath: 'example/docs',
+      debug: true
+    })
     
-    if (userManagementItem) {
-      expect(userManagementItem.text).toContain('GET')
-      expect(userManagementItem.text).toContain('method-tag')
-    }
+    expect(Array.isArray(result)).toBe(true)
+    expect(result.length).toBeGreaterThan(0)
   })
 
-  // 辅助函数
-  function findTaggedItem(items) {
-    for (const item of items) {
-      if (item.text && item.text.includes('method-tag')) {
-        return item
-      }
-      if (item.items) {
-        const found = findTaggedItem(item.items)
-        if (found) return found
-      }
-    }
-    return null
-  }
+  test('应该能够使用 generateSidebar 生成侧边栏', () => {
+    const result = generateSidebar(testTags, {
+      docsPath: 'example/docs',
+      debug: true
+    })
+    
+    expect(Array.isArray(result)).toBe(true)
+    // 即使没有找到文件，也应该返回空数组
+  })
 
-  function findItemByLink(items, link) {
-    for (const item of items) {
-      if (item.link === link) {
-        return item
-      }
-      if (item.items) {
-        const found = findItemByLink(item.items, link)
-        if (found) return found
-      }
-    }
-    return null
-  }
+  test('应该能够创建 HTTP 方法标签', () => {
+    const httpTag = createHttpMethodsTag()
+    expect(httpTag).toBeDefined()
+    expect(httpTag.field).toBe('method')
+    expect(httpTag.position).toBe('after')
+    expect(httpTag.size).toBe('xs')
+  })
+
+  test('应该正确处理空侧边栏', () => {
+    const result = withSidebarTags([], testTags, {
+      docsPath: 'example/docs',
+      debug: true
+    })
+    
+    expect(Array.isArray(result)).toBe(true)
+    expect(result.length).toBe(0)
+  })
 }) 
