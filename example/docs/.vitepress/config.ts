@@ -42,7 +42,7 @@ const sidebar = [
 
 // https://vitepress.vuejs.org/config/app-configs
 export default defineConfig({
-  title: 'VitePress Sidebar Tags Plugin',
+  title: 'VitePress Sidebar Tags',
   description: '一个强大的 VitePress 插件，根据 frontmatter 自动为侧边栏添加标签',
   
   head: [
@@ -76,50 +76,39 @@ export default defineConfig({
     sidebar: withSidebarTags(sidebar, [
       // HTTP 方法标签
       createHttpMethodsTag({
-        rounded: 'full',
-        size: 'sm',
-        variant: 'soft',
+        position: 'after',
+        rounded: 'sm',
+        size: 'xs',
+        variant: 'solid',
       }),
       
       // 版本标签
       createVersionTag({
+        position: 'after',
         rounded: 'md',
-        size: 'lg',
-        variant: 'subtle',
+        size: 'xs',
+        variant: 'outline',
+        color: 'blue'
       }),
       
       // 状态标签
       createStatusTag({
-        rounded: 'lg',
-        size: 'xs'
+        position: 'after',
+        rounded: 'md',
+        size: 'xs',
+        variant: 'soft'
       }),
       
       // 更新标签
       createUpdateTag({
-        rounded: 'full',
-        size: 'xs'
-      }),
-      
-      // 自定义分类标签
-      {
-        field: 'category',
-        position: 'before',
+        position: 'after',
+        rounded: 'sm',
         size: 'xs',
-        variant: 'outline',
-        color: 'purple',
-        rounded: 'xl',
-        prefix: '[',
-        suffix: ']',
-        transform: (value) => value.toUpperCase(),
-        valueStyles: {
-          'core': { color: 'success' },
-          'premium': { color: 'warning' },
-          'beta': { color: 'info' }
-        }
-      }
+        variant: 'solid'
+      })
     ], {
       docsPath: 'docs',
-      debug: true
+      debug: false
     }) as any,
 
     socialLinks: [
@@ -137,7 +126,6 @@ export default defineConfig({
   },
 
   markdown: {
-    theme: 'github-dark',
     lineNumbers: true
   }
 })
