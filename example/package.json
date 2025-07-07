@@ -19,6 +19,6 @@
     }
   },
   "dependencies": {
-    "vitepress-plugin-sidebar-tags": "^0.2.3"
+    "vitepress-plugin-sidebar-tags": "^0.2.4"
   }
 }
